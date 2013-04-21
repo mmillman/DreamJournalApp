@@ -1,0 +1,59 @@
+<h1>Dreams page</h1>
+<h2>My dreams:</h2>
+
+<button id="refresh-dreams">Refresh dreams list</button>
+<div id="dreams-list">
+</div>
+
+<!-- <form action="/dreams" method="post">
+  <label for="dream_title">Dream title</label>
+  <input type="text" id="dream_title" name="dream[title]">
+
+  <br>
+
+  <label for="dream_body">Dream description</label>
+  <input type="text" id="dream_body" name="dream[body]">
+
+  <br>
+
+  <input type="hidden" name="format" value="json">
+
+  <input type="submit" name="my_button" value="Save dream">
+</form> -->
+
+<h2>Create new dream:</h2>
+<div id="dream-form">
+  <label for="dream_title">Dream title</label>
+  <input type="text" id="dream-title" name="dream[title]">
+
+  <br>
+
+  <label for="dream_body">Dream description</label>
+  <input type="text" id="dream-body" name="dream[body]">
+
+  <br>
+
+  <button id="submit-dream" name="my_button" value="my_value">Save dream</button>
+<div>
+
+<script type="text/javascript">
+  $(function () {
+    var $dreamList = $('#dream-list');
+    var dreamIndexView = new DJ.DreamIndexView($('#dreams-list'));
+
+    DJ.Dream.refresh();
+
+    // $('#submit-dream').click(function () {
+    //   var $dreamForm = $('#dream-form');
+    //   var dreamTitle = $dreamForm.find('#dream-title').val();
+    //   var dreamBody = $dreamForm.find('#dream-body').val();
+    //   console.log("button clicked!")
+    //   console.log("title:", dreamTitle);
+    //   console.log("body:", dreamBody);
+    //
+    //   (new DJ.Dream({ "title": dreamTitle, "body": dreamBody })).save();
+    //
+    // });
+  });
+
+</script>
