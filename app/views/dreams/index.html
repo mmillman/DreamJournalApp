@@ -1,9 +1,8 @@
 <h1>Dreams page</h1>
 <h2>My dreams:</h2>
 
-<button id="refresh-dreams">Refresh dreams list</button>
-<div id="dreams-list">
-</div>
+<button id="refresh-dreams-button">Refresh dreams list</button>
+<div id="dreams-list"></div>
 
 <!-- <form action="/dreams" method="post">
   <label for="dream_title">Dream title</label>
@@ -22,8 +21,8 @@
 </form> -->
 
 <h2>Create new dream:</h2>
-<div id="dream-form">
-  <label for="dream_title">Dream title</label>
+<div id="dream-form"></div>
+<!--   <label for="dream_title">Dream title</label>
   <input type="text" id="dream-title" name="dream[title]">
 
   <br>
@@ -34,14 +33,29 @@
   <br>
 
   <button id="submit-dream" name="my_button" value="my_value">Save dream</button>
-<div>
+<div> -->
 
 <script type="text/javascript">
   $(function () {
     var $dreamList = $('#dream-list');
-    var dreamIndexView = new DJ.DreamIndexView($('#dreams-list'));
+    var dreamIndexView = new DJ.DreamIndexView(
+      $('#dreams-list'),
+      $('#refresh-dreams-button'),
+      function () {
+        console.log("dream selected!");
+        // new DJ.DreamView(dream, el);
+      }
+    );
 
-    DJ.Dream.refresh();
+    // function (title, body) {
+    //   new DJ.DreamView({ title: title, body: body };
+    // }
+
+    // DJ.Dream.refresh();
+    //
+
+    var dreamFormView = new DJ.DreamFormView($('#dream-form'), new DJ.Dream({}));
+    // var dreamFormView = new DJ.DreamFormView($('#dream-form'), new DJ.Dream({title: "formDream"}));
 
     // $('#submit-dream').click(function () {
     //   var $dreamForm = $('#dream-form');

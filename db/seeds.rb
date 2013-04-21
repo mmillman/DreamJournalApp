@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+
+ActiveRecord::Base.transaction do
+  Dream.create!(title: "Flying", body: "Pretty great.")
+  Dream.create!(title: "Drowning", body: "A bit scary.")
+  Dream.create!(title: "Staring at a wall", body: "Best dream ever.")
+
+end

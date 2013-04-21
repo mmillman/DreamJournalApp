@@ -40,58 +40,167 @@ var DJ = (function () {
     );
   };
 
-  Dream.prototype.save = function () {
+  Dream.prototype.save = function (dreamFormView) {
+    console.log("saving!");
     var that = this;
-    console.log("in save method!");
 
-    $.post("/dreams.json", {
-      dream: {
-        id: that.id,
-        // Forgot to put title in here and was saving dreams to db with null
-        // titles.
-        title: that.title,
-        body: that.body
+    $.ajax("/dreams.json", {
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        dream: {
+          id: that.id,
+          title: that.title,
+          body: that.body
+        }
+      },
+      success: function (response) {
+        that.id = response.id;
+        Dream.all.push(that);
+
+        dreamFormView.clear();
+        dreamFormView.bindSubmit();
+
+        // Dream.callCallbacks();
+      },
+      error: function () {
+        console.log("fail!");
+        dreamFormView.bindSubmit();
       }
-    }, function (response) {
-      that.id = response.id;
-      Dream.all.push(that);
-
-      Dream.callCallbacks();
     });
   };
 
-  function DreamIndexView(el, callback) {
+  function DreamIndexView(listEl, refreshEl, onSelect) {
     var that = this;
-    this.$el = $(el);
+
+    this.selectHandler = onSelect;
+
+    this.$listEl = $(listEl);
+    this.$refreshEl = $(refreshEl);
+
+    this.bindRefresh(that.$refreshEl[0]);
 
     Dream.addCallback(function () {
       that.render();
     });
+
+    // $('#my-unordered-list').on( 'click', function( event ) {
+    //   console.log( event.target ); // logs the element that initiated the event
+    // });
+
+    // Dream.refresh();
   }
 
+  DreamIndexView.prototype.bindRefresh = function (refreshEl, onClick) {
+    var that = this;
+    // console.log("refresh button:", refreshEl);
+
+    $(refreshEl).on('click', function () {
+      Dream.refresh();
+    });
+  };
+
   DreamIndexView.prototype.render = function () {
+    var that = this;
+
     console.log("rendering...");
     var ul = $('<ul></ul>');
-    console.log("HI");
+
+    // _(Dream.all).each(function (dream) {
+    //   new DreamView(dream, $('<li></li>'));
+    // });
 
     _(Dream.all).each(function (dream) {
       ul.append($('<li></li>').text("[" + dream.title + "]: " + dream.body));
     });
 
-    // Sets html to replace old list with new one
-    // this.$el.append(ul);
-    this.$el.html(ul);
+    that.$listEl.html(ul);
+  };
+
+  function DreamView(dream, el) {
+    this.dream = dream;
+    this.$el = $(el);
+
+    this.$el.html("[" + dream.title + "]: " + dream.body);
+
+    this.$el.on('click', function () {
+      console.log(dream);
+    });
   }
 
 
-  // function DreamView(dream, el) {
-  //   // $(el).inner(dream.);
-  // }
+  function DreamFormView(formEl, newDream) {
+    this.$formEl = $(formEl);
+    this.$titleEl = $('<input>')
+      .attr('id', 'dream-title')
+      .attr('name', 'dream[title]');
+
+    this.$bodyEl = $('<textarea></textarea>')
+      .attr('id', 'dream-body')
+      .attr('name', 'dream[body]');
+
+    this.$submitBtn = $('<button></button>')
+      .attr('id', 'dream-submit')
+      .attr('name', 'my_button')
+      .attr('value', 'my_value')
+      .html('Save dream');
+
+    this.newDream = newDream;
+
+    this.$formEl.append(this.$titleEl);
+    this.$formEl.append(this.$bodyEl);
+    this.$formEl.append(this.$submitBtn);
+
+    this.bindSubmit();
+  }
+
+  DreamFormView.prototype.bindSubmit = function () {
+    var that = this;
+    console.log("Submit button:", that.$submitBtn);
+
+    that.buttonClickHandler = function () {
+      that.submit();
+    };
+
+    $(that.$submitBtn[0]).on('click', that.buttonClickHandler);
+  }
+
+  DreamFormView.prototype.unbindSubmit = function () {
+    var that = this;
+
+    that.$submitBtn.off('click');
+    delete that.buttonClickHandler;
+  }
+
+  DreamFormView.prototype.submit = function () {
+    var that = this;
+
+    that.unbindSubmit();
+    that.newDream.title = $(that.$titleEl).val();
+    that.newDream.body = $(that.$bodyEl).val();
+
+    console.log("submitting new dream:", that.newDream);
+    that.newDream.save(that);
+  }
+
+  DreamFormView.prototype.render = function() {
+    var that = this;
+
+    Dream.addCallback(function () {
+      that.render();
+    })
+  }
+
+  DreamFormView.prototype.clear = function() {
+    this.$titleEl.val("");
+    this.$bodyEl.val("");
+  }
 
   return {
     Dream: Dream,
     DreamIndexView: DreamIndexView,
-    // DreamView: DreamView
+    DreamView: DreamView,
+    DreamFormView: DreamFormView
   };
 
 })();
