@@ -8,8 +8,20 @@
 
 
 ActiveRecord::Base.transaction do
-  Dream.create!(title: "Flying", body: "Pretty great.")
-  Dream.create!(title: "Drowning", body: "A bit scary.")
+  Dream.create!(title: "Flight", body: "Pretty great.")
+  Dream.create!(title: "Underwater", body: "A bit scary.")
   Dream.create!(title: "Staring at a wall", body: "Best dream ever.")
+  Dream.create!(title: "Pilot time", body: "Flew an airplane")
+
+  Theme.create!(name: "flying")
+  Theme.create!(name: "drowning")
+  Theme.create!(name: "airplanes")
+  Theme.create!(name: "fun")
+
+  DreamTheme.create!(dream_id: 1, theme_id: 1)
+  DreamTheme.create!(dream_id: 1, theme_id: 4)
+  DreamTheme.create!(dream_id: 2, theme_id: 2)
+  DreamTheme.create!(dream_id: 3, theme_id: 3)
+  DreamTheme.create!(dream_id: 4, theme_id: 1)
 
 end

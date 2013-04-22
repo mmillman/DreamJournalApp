@@ -1,8 +1,13 @@
 class DreamsController < ApplicationController
   def index
+=begin
+   http://stackoverflow.com/questions/10159735/include-has-many-results-in-rest-json-result
+=end
+    dreams_and_themes = Dream.includes(:themes).all
+
     respond_to do |format|
       format.html { render :index }
-      format.json { render :json => Dream.all }
+      format.json { render :json => dreams_and_themes.to_json(:include => :themes) }
     end
   end
 
